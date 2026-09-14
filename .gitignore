@@ -17,3 +17,5 @@ data/*.db-shm
 .DS_Store
 *.log
 npm-debug.log*
+
+e2e-screenshots/

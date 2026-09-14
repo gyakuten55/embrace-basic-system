@@ -1,6 +1,7 @@
 import 'server-only'
 import crypto from 'node:crypto'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { db } from './db'
 import type { Staff } from './types'
 
@@ -54,9 +55,10 @@ export async function currentStaff(): Promise<Staff | null> {
   return row ?? null
 }
 
+/** ログインが切れていればログイン画面へ戻す。更新系の Server Action の先頭で呼ぶ。 */
 export async function requireStaff(): Promise<Staff> {
   const staff = await currentStaff()
-  if (!staff) throw new Error('UNAUTHENTICATED')
+  if (!staff) redirect('/login')
   return staff
 }
 

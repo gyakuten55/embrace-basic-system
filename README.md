@@ -89,6 +89,19 @@ npm run typecheck    # 型チェック
 npm run db:reset     # データベースを削除して初期データから作り直す
 ```
 
+### 動作確認（E2Eテスト）
+
+ログインから記録入力・実績・勤怠・削除まで、主要な業務の流れを実際のブラウザで確認します。
+
+```bash
+npm i -D playwright && npx playwright install chromium
+npm run dev                       # 別のターミナルで
+npm run e2e                       # 35項目をチェックし、画面の写真を e2e-screenshots/ に保存
+```
+
+テスト中にデータが書き込まれるため、本番のデータベースには向けないでください。
+確認用のデータベースを使うときは `DATABASE_FILE=./data/test.db npm run dev` のように起動します。
+
 
 ## 構成
 

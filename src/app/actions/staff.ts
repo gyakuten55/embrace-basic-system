@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { db, now } from '@/lib/db'
-import { currentStaff, requireStaff, isAdmin } from '@/lib/auth'
+import { requireStaff, isAdmin } from '@/lib/auth'
 import { hashPassword, verifyPassword } from '@/lib/password'
 
 function str(fd: FormData, key: string) {
@@ -110,8 +110,4 @@ export async function changeOwnPassword(formData: FormData) {
     .prepare('UPDATE staff SET password_hash = ?, updated_at = ? WHERE id = ?')
     .run(hashPassword(next), now(), me.id)
   redirect('/settings?saved=password')
-}
-
-export async function canManageStaff() {
-  return isAdmin(await currentStaff())
 }

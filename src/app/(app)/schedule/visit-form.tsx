@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { deleteVisit, saveVisit } from '@/app/actions/visits'
 import { Field, FormActions, FormRow, Panel } from '@/components/ui'
+import { ConfirmButton } from '@/components/confirm-button'
 import { VISIT_STATUS } from '@/lib/types'
 import type { Client, ServiceCode, Staff } from '@/lib/types'
 import type { VisitRow } from '@/lib/queries'
@@ -122,9 +123,12 @@ export function VisitForm({
             <p className="text-xs text-ink-sub">
               この予定を削除します。記録が入力されている場合は記録も一緒に削除されます。
             </p>
-            <button type="submit" className="btn btn-danger btn-sm">
+            <ConfirmButton
+              className="btn btn-danger btn-sm"
+              message="この訪問予定を削除します。記録が入力されている場合は記録も削除され、元に戻せません。よろしいですか？"
+            >
               予定を削除
-            </button>
+            </ConfirmButton>
           </div>
         </form>
       )}

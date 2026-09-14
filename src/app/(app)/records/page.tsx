@@ -4,6 +4,7 @@ import { activeStaff, unrecordedVisits, visitsBetween } from '@/lib/queries'
 import { confirmVisits } from '@/app/actions/visits'
 import { Content, Empty, Panel, PageHeader, StatusBadge } from '@/components/ui'
 import { DayNav, FilterSelect } from '@/components/period-nav'
+import { ConfirmButton } from '@/components/confirm-button'
 
 export const dynamic = 'force-dynamic'
 
@@ -79,9 +80,12 @@ export default async function RecordsPage({ searchParams }: { searchParams: Prom
                 {plannedToday.map((v) => (
                   <input key={v.id} type="hidden" name="visit_id" value={v.id} />
                 ))}
-                <button type="submit" className="btn btn-default btn-sm">
+                <ConfirmButton
+                  className="btn btn-default btn-sm"
+                  message={`この日の予定 ${plannedToday.length} 件を、予定どおり実施したものとして実績に記録します。よろしいですか？`}
+                >
                   予定 {plannedToday.length} 件を実施済にする
-                </button>
+                </ConfirmButton>
               </form>
             ) : undefined
           }

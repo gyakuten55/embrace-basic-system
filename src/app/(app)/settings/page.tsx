@@ -5,6 +5,7 @@ import { aiEngineLabel } from '@/lib/ai'
 import { changeOwnPassword } from '@/app/actions/staff'
 import { deleteService, saveOffice, saveService } from '@/app/actions/settings'
 import { Content, Field, FormActions, FormRow, Panel, PageHeader } from '@/components/ui'
+import { ConfirmButton } from '@/components/confirm-button'
 import { INSURANCE_TYPES } from '@/lib/types'
 import { TERM_CORRECTIONS } from '@/lib/care-terms'
 import type { ServiceCode } from '@/lib/types'
@@ -124,9 +125,12 @@ export default async function SettingsPage({
                       {canManage && (
                         <form action={deleteService}>
                           <input type="hidden" name="id" value={s.id} />
-                          <button type="submit" className="btn btn-quiet btn-sm text-ng">
+                          <ConfirmButton
+                            className="btn btn-quiet btn-sm text-ng"
+                            message={`「${s.name}」を削除します。実績で使われている場合は削除せず無効にします。よろしいですか？`}
+                          >
                             削除
-                          </button>
+                          </ConfirmButton>
                         </form>
                       )}
                     </td>

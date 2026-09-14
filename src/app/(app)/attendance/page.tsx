@@ -101,10 +101,12 @@ export default async function AttendancePage({
         </div>
 
         <div className="panel overflow-x-auto">
-          <table className="table w-full min-w-[62rem]">
+          <table className="table w-full min-w-[78rem]">
             <thead>
               <tr>
-                <th className="sticky left-0 z-10 w-36 border-r border-line bg-line-soft">職員</th>
+                <th className="sticky left-0 z-10 w-32 whitespace-nowrap border-r border-line bg-line-soft">
+                  職員
+                </th>
                 {days.map((d) => {
                   const wd = isoToDate(d).getDay()
                   return (
@@ -125,8 +127,9 @@ export default async function AttendancePage({
                     </th>
                   )
                 })}
-                <th className="w-16 border-l border-line text-right">出勤</th>
-                <th className="w-20 text-right">実働</th>
+                <th className="sticky right-0 z-10 w-28 whitespace-nowrap border-l border-line bg-line-soft text-right">
+                  出勤 / 実働
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -136,7 +139,7 @@ export default async function AttendancePage({
                 const sum = summarize(mine)
                 return (
                   <tr key={s.id}>
-                    <td className="sticky left-0 z-10 border-r border-line bg-white">
+                    <td className="sticky left-0 z-10 whitespace-nowrap border-r border-line bg-white">
                       <Link href={`/attendance/${s.id}?month=${month}`} className="link text-sm font-medium">
                         {s.name}
                       </Link>
@@ -160,23 +163,27 @@ export default async function AttendancePage({
                         </td>
                       )
                     })}
-                    <td className="tnum border-l border-line text-right text-sm">{sum.workDays}</td>
-                    <td className="tnum text-right text-sm font-medium">{hours(sum.minutes)}h</td>
+                    <td className="tnum sticky right-0 z-10 whitespace-nowrap border-l border-line bg-white text-right text-sm">
+                      <span className="text-ink-sub">{sum.workDays}日</span>
+                      <span className="ml-2 font-medium">{hours(sum.minutes)}h</span>
+                    </td>
                   </tr>
                 )
               })}
             </tbody>
             <tfoot>
               <tr className="border-t-2 border-line-hard bg-line-soft/60 font-medium">
-                <td className="sticky left-0 z-10 border-r border-line bg-line-soft px-3 py-2 text-xs">
+                <td className="sticky left-0 z-10 whitespace-nowrap border-r border-line bg-line-soft px-3 py-2 text-xs">
                   合計
                 </td>
                 <td colSpan={days.length}></td>
-                <td className="tnum border-l border-line px-1 py-2 text-right text-sm">
-                  {staffList.reduce((n, s) => n + summarize(byStaff.get(s.id) ?? []).workDays, 0)}
-                </td>
-                <td className="tnum px-3 py-2 text-right text-sm">
-                  {hours(rows.reduce((n, r) => n + workedMinutes(r), 0))}h
+                <td className="tnum sticky right-0 z-10 whitespace-nowrap border-l border-line bg-line-soft px-3 py-2 text-right text-sm">
+                  <span className="text-ink-sub">
+                    {staffList.reduce((n, s) => n + summarize(byStaff.get(s.id) ?? []).workDays, 0)}日
+                  </span>
+                  <span className="ml-2 font-medium">
+                    {hours(rows.reduce((n, r) => n + workedMinutes(r), 0))}h
+                  </span>
                 </td>
               </tr>
             </tfoot>

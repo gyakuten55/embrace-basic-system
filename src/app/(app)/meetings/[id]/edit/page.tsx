@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { allClients, activeStaff, officeInfo } from '@/lib/queries'
 import { deleteMeeting } from '@/app/actions/meetings'
 import { Breadcrumb, Content, Panel, PageHeader } from '@/components/ui'
+import { ConfirmButton } from '@/components/confirm-button'
 import { MeetingForm } from '../../meeting-form'
 import type { Meeting, MeetingAttendee } from '@/lib/types'
 
@@ -42,9 +43,12 @@ export default async function EditMeetingPage({ params }: { params: Promise<{ id
           <form action={deleteMeeting} className="flex items-center justify-between gap-4">
             <input type="hidden" name="id" value={meeting.id} />
             <p className="text-xs text-ink-sub">出席者の記録もあわせて削除され、元に戻せません。</p>
-            <button type="submit" className="btn btn-danger shrink-0">
+            <ConfirmButton
+              className="btn btn-danger shrink-0"
+              message={`${meeting.held_on} の${meeting.kind}の記録を削除します。元に戻せません。よろしいですか？`}
+            >
               削除する
-            </button>
+            </ConfirmButton>
           </form>
         </Panel>
       </Content>

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { clientById } from '@/lib/queries'
 import { deleteClient } from '@/app/actions/clients'
 import { Breadcrumb, Content, Panel, PageHeader } from '@/components/ui'
+import { ConfirmButton } from '@/components/confirm-button'
 import { ClientForm } from '../../client-form'
 
 export const dynamic = 'force-dynamic'
@@ -41,9 +42,12 @@ export default async function EditClientPage({
               契約・計画書・訪問予定・記録もすべて削除され、元に戻せません。
               サービスが終わっただけの場合は、削除せず利用状況を「終了」にしてください。
             </p>
-            <button type="submit" className="btn btn-danger shrink-0">
+            <ConfirmButton
+              className="btn btn-danger shrink-0"
+              message={`${client.name} 様の情報を削除します。契約・計画書・訪問予定・記録もすべて削除され、元に戻せません。よろしいですか？`}
+            >
               削除する
-            </button>
+            </ConfirmButton>
           </form>
         </Panel>
       </Content>

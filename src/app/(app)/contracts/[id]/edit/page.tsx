@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { allClients, activeStaff } from '@/lib/queries'
 import { deleteContract } from '@/app/actions/contracts'
 import { Breadcrumb, Content, Panel, PageHeader } from '@/components/ui'
+import { ConfirmButton } from '@/components/confirm-button'
 import { ContractForm } from '../../contract-form'
 import type { Contract } from '@/lib/types'
 
@@ -44,9 +45,9 @@ export default async function EditContractPage({ params }: { params: Promise<{ i
             <p className="text-xs text-ink-sub">
               削除すると元に戻せません。契約が終わっただけの場合は状態を「終了」にしてください。
             </p>
-            <button type="submit" className="btn btn-danger shrink-0">
+            <ConfirmButton className="btn btn-danger shrink-0" message="この契約を削除します。元に戻せません。よろしいですか？">
               削除する
-            </button>
+            </ConfirmButton>
           </form>
         </Panel>
       </Content>

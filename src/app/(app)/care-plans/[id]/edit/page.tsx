@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { allClients, activeServices, activeStaff } from '@/lib/queries'
 import { deletePlan } from '@/app/actions/care-plans'
 import { Breadcrumb, Content, Panel, PageHeader } from '@/components/ui'
+import { ConfirmButton } from '@/components/confirm-button'
 import { PlanForm } from '../../plan-form'
 import type { CarePlan, CarePlanItem } from '@/lib/types'
 
@@ -50,9 +51,12 @@ export default async function EditPlanPage({ params }: { params: Promise<{ id: s
             <p className="text-xs text-ink-sub">
               明細もあわせて削除され、元に戻せません。過去の計画は残したい場合、状態を「終了」にしてください。
             </p>
-            <button type="submit" className="btn btn-danger shrink-0">
+            <ConfirmButton
+              className="btn btn-danger shrink-0"
+              message={`第${plan.revision}版の計画書を明細ごと削除します。元に戻せません。よろしいですか？`}
+            >
               削除する
-            </button>
+            </ConfirmButton>
           </form>
         </Panel>
       </Content>
