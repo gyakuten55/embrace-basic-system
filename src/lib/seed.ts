@@ -163,6 +163,74 @@ function seedContracts(conn: Database.Database) {
   })
 }
 
+/** 利用者ごとの意向・方針・目標。週間サービス内容は WEEKLY の訪問パターンから組み立てる。 */
+const PLAN_TEXT: Record<number, { intention: string; policy: string; long: string; short: string; content: string; caution: string }> = {
+  0: {
+    intention: '自分でできることは続けたい。お風呂に安心して入れるようにしてほしい。',
+    policy: '転倒に留意しながら、入浴と整容の自立度を保つ支援を行う。',
+    long: '入浴時の転倒なく、週3回の入浴を継続できる。',
+    short: '浴室内の移動を見守りで行える。',
+    content: '入浴介助、洗身の一部介助、更衣介助、整容',
+    caution: '浴室の段差に注意し、滑り止めマットを必ず敷く。37.5度以上のときは清拭に変更する。',
+  },
+  1: {
+    intention: '家族に負担をかけたくない。ベッドから自分で起き上がれるようになりたい。',
+    policy: '左半身麻痺に配慮し、移乗動作の安全確保と褥瘡予防を最優先とする。',
+    long: '褥瘡を発生させず、在宅生活を継続できる。',
+    short: '移乗時の声かけで、残存機能を使った起き上がりができる。',
+    content: '排泄介助、移乗介助、体位交換、清拭、服薬介助',
+    caution: '移乗は必ず健側から行い、無理な引き上げをしない。仙骨部の発赤の有無を毎回確認し記録する。',
+  },
+  2: {
+    intention: '薬を飲み忘れないようにしたい。人と話す機会がほしい。',
+    policy: '服薬の確認と声かけを通じて、在宅での生活リズムを保つ。',
+    long: '服薬を継続し、体調を崩さず在宅生活を送れる。',
+    short: '声かけがあれば自分で服薬できる。',
+    content: '服薬介助、バイタル測定、見守り・声かけ',
+    caution: '飲み込みまで見守る。日付を本人と一緒に確認してから薬を取り出す。',
+  },
+  3: {
+    intention: '床ずれをこれ以上つくりたくない。',
+    policy: '体位交換と皮膚観察を確実に行い、褥瘡の再発を防ぐ。',
+    long: '仙骨部の褥瘡を再発させない。',
+    short: '2時間ごとの体位交換を継続できる。',
+    content: '排泄介助、体位交換、清拭、口腔ケア',
+    caution: '毎回、仙骨部と踵の皮膚状態を確認する。発赤があればサ責と訪問看護へ連絡する。',
+  },
+  4: {
+    intention: '買い物と掃除だけ手伝ってほしい。あとは自分でやりたい。',
+    policy: '生活援助を通じて在宅での自立生活を維持し、閉じこもりを防ぐ。',
+    long: '住環境を清潔に保ち、独居生活を継続できる。',
+    short: '週1回の買い物に同行し、自分で品物を選べる。',
+    content: '掃除、洗濯、ゴミ出し、買い物同行',
+    caution: '本人のやり方を尊重し、指示を待ってから行う。買い物の支払いは本人が行う。',
+  },
+  5: {
+    intention: '血糖値を安定させて、長く家で暮らしたい。',
+    policy: '食事と服薬の状況を確認し、糖尿病の重症化を防ぐ。',
+    long: '血糖コントロールを保ち、入院せずに在宅生活を続ける。',
+    short: '毎食後の血糖測定と記録を習慣にできる。',
+    content: '食事介助、服薬介助、バイタル測定、調理',
+    caution: 'インスリンは本人が自己注射する。実施の有無を確認し記録に残す。',
+  },
+  6: {
+    intention: '自分の部屋をきれいにしておきたい。',
+    policy: '生活の場を整えながら、できる家事を本人と一緒に行う。',
+    long: '居室を清潔に保ち、落ち着いて過ごせる。',
+    short: '洗濯物をたたむ作業を自分で行える。',
+    content: '掃除、洗濯、調理、見守り・声かけ',
+    caution: '手順は一つずつ短く伝える。急かさない。',
+  },
+  7: {
+    intention: 'お風呂に自分のペースで入りたい。',
+    policy: '下肢の状態に配慮し、安全に入浴できる環境を整える。',
+    long: '転倒なく週2回の入浴を継続できる。',
+    short: '浴槽への出入りを部分介助で行える。',
+    content: '入浴介助、洗身の一部介助、更衣介助',
+    caution: '浴槽の出入りは必ず2動作に分けて行う。シャワーチェアを使用する。',
+  },
+}
+
 function seedPlans(conn: Database.Database) {
   const insPlan = conn.prepare(
     `INSERT INTO care_plans (client_id, revision, created_on, author_id, period_from, period_to,
@@ -175,57 +243,38 @@ function seedPlans(conn: Database.Database) {
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
   )
 
-  const plans: [clientId: number, intention: string, policy: string, long: string, short: string, items: [number, string, string, number, string, string][]][] = [
-    [
-      1,
-      '自分でできることは続けたい。お風呂に安心して入れるようにしてほしい。',
-      '転倒に留意しながら、入浴と整容の自立度を保つ支援を行う。',
-      '入浴時の転倒なく、週2回の入浴を継続できる。',
-      '浴室内の移動を見守りで行える。',
-      [
-        [1, '09:00', '09:45', 2, '入浴介助、洗身の一部介助、更衣介助', '浴室内の段差に注意。滑り止めマットを必ず敷く。'],
-        [3, '09:00', '09:45', 2, '入浴介助、整容（爪切り・整髪）', 'バイタル37.5度以上のときは清拭に変更する。'],
-        [5, '09:00', '09:45', 2, '入浴介助、更衣介助', '体調確認のうえ実施。'],
-      ],
-    ],
-    [
-      2,
-      '家族に負担をかけたくない。ベッドから自分で起き上がれるようになりたい。',
-      '左半身麻痺に配慮し、移乗動作の安全確保と褥瘡予防を最優先とする。',
-      '褥瘡を発生させず、在宅生活を継続できる。',
-      '移乗時の声かけで、残存機能を使った起き上がりができる。',
-      [
-        [1, '10:30', '11:30', 3, '排泄介助、移乗介助、体位交換、清拭', '移乗は必ず健側から。無理な引き上げをしない。'],
-        [2, '10:30', '11:30', 3, '排泄介助、体位交換、口腔ケア', '仙骨部の発赤有無を毎回確認し記録する。'],
-        [4, '10:30', '11:30', 3, '排泄介助、移乗介助、服薬介助', '服薬は飲み込みまで見守る。'],
-        [6, '10:30', '11:30', 3, '排泄介助、清拭、体位交換', ''],
-      ],
-    ],
-    [
-      5,
-      '買い物と掃除だけ手伝ってほしい。あとは自分でやりたい。',
-      '生活援助を通じて在宅での自立生活を維持し、閉じこもりを防ぐ。',
-      '住環境を清潔に保ち、独居生活を継続できる。',
-      '週1回の買い物に同行し、自分で品物を選べる。',
-      [
-        [1, '16:00', '16:45', 4, '居室の掃除機がけ、ゴミ出し', '本人のやり方を尊重し、指示を待って行う。'],
-        [3, '16:30', '17:15', 4, '洗濯、ベッドメイク', ''],
-        [5, '15:30', '16:30', 5, '買い物同行、調理（作り置き）', '買い物は本人が選び、支払いも本人が行う。'],
-      ],
-    ],
-  ]
+  const base = today()
 
-  plans.forEach(([clientId, intention, policy, long, short, items]) => {
+  CLIENTS.forEach((client, clientIdx) => {
+    const text = PLAN_TEXT[clientIdx]
+    if (!text) return
+
+    // 大半は期間内。1名だけ期限間近にして、ダッシュボードの注意喚起が動くようにする。
+    const soonExpiring = clientIdx === 2
+    const createdOn = addDays(base, -180 + clientIdx * 3)
+    const periodFrom = createdOn
+    const periodTo = soonExpiring ? addDays(base, 24) : addDays(createdOn, 364)
+
     const res = insPlan.run(
-      clientId, 1, '2025-04-05', 2, '2025-04-01', '2026-03-31',
-      intention, '本人の意向を尊重しつつ、無理のない範囲で支援をお願いしたい。',
-      policy, long, '1年', short, '6か月', '2025-04-08',
-      `${CLIENTS[clientId - 1][1]}（長女 代筆）`, '同意済',
+      clientIdx + 1, 1, createdOn, clientIdx % 2 === 0 ? 2 : 3, periodFrom, periodTo,
+      text.intention, '本人の意向を尊重しつつ、無理のない範囲で支援をお願いしたい。',
+      text.policy, text.long, '1年', text.short, '6か月', addDays(createdOn, 3),
+      `${client[1]}（長女 代筆）`, '同意済',
     )
     const planId = Number(res.lastInsertRowid)
-    items.forEach(([weekday, start, end, service, content, caution], i) =>
-      insItem.run(planId, weekday, start, end, service, content, caution, i),
-    )
+
+    // 実際の訪問パターン（WEEKLY）と計画書の内容を一致させる
+    const slots: [number, number, string, string][] = []
+    for (const [weekday, entries] of Object.entries(WEEKLY)) {
+      for (const [idx, , serviceIdx, start, end] of entries) {
+        if (idx === clientIdx) slots.push([Number(weekday), serviceIdx, start, end])
+      }
+    }
+    slots
+      .sort((a, b) => (a[0] + 6) % 7 - (b[0] + 6) % 7 || a[2].localeCompare(b[2]))
+      .forEach(([weekday, serviceIdx, start, end], i) =>
+        insItem.run(planId, weekday, start, end, serviceIdx + 1, text.content, text.caution, i),
+      )
   })
 }
 

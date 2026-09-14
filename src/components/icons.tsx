@@ -127,6 +127,13 @@ export const Icon = {
       <path d="M10.2 10.2 14 14" />
     </Svg>
   ),
+  badge: (p: Props) => (
+    <Svg {...p}>
+      <rect x="2" y="3.6" width="12" height="9.4" rx="1.2" />
+      <circle cx="6" cy="7.4" r="1.5" />
+      <path d="M3.6 11.4c0-1.2 1.1-2 2.4-2s2.4.8 2.4 2M10.4 6.6h2.2M10.4 9h2.2" />
+    </Svg>
+  ),
   warn: (p: Props) => (
     <Svg {...p}>
       <path d="M8 2.4 14.4 13.6H1.6z" />

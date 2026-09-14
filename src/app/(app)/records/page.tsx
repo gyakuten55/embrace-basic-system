@@ -102,7 +102,53 @@ export default async function RecordsPage({ searchParams }: { searchParams: Prom
               }
             />
           ) : (
-            <div className="overflow-x-auto">
+            <>
+            {/* スマートフォン: 1件ずつのカード表示（ヘルパーが訪問先で使う） */}
+            <ul className="divide-y divide-line-soft md:hidden">
+              {rows.map((v) => (
+                <li key={v.id} className="px-4 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="tnum text-xs text-ink-sub">
+                        {view === 'unrecorded' && <span className="mr-1.5">{shortDate(v.date)}</span>}
+                        {v.status === '実施済' && v.actual_start
+                          ? `${v.actual_start}–${v.actual_end}`
+                          : `${v.plan_start}–${v.plan_end}`}
+                      </div>
+                      <div className="mt-0.5 text-base font-medium">{v.client_name}</div>
+                      <div className="text-xs text-ink-sub">
+                        {v.service_name ?? 'サービス未設定'}
+                        <span className="mx-1.5 text-line-hard">/</span>
+                        {v.staff_name ?? '未割当'}
+                      </div>
+                    </div>
+                    <StatusBadge value={v.status} />
+                  </div>
+
+                  <div className="mt-2 flex items-end justify-between gap-3">
+                    <p className="line-clamp-2 min-w-0 flex-1 text-xs leading-relaxed text-ink-sub">
+                      {v.status === 'キャンセル' ? (
+                        v.cancel_reason || '理由未入力'
+                      ) : v.record_note ? (
+                        v.record_note
+                      ) : v.status === '実施済' ? (
+                        <StatusBadge value="未記録" />
+                      ) : (
+                        '訪問後に記録を入力します'
+                      )}
+                    </p>
+                    <Link
+                      href={`/records/${v.id}`}
+                      className={`btn shrink-0 ${v.record_id ? 'btn-default' : 'btn-primary'}`}
+                    >
+                      {v.record_id ? '記録を編集' : '記録する'}
+                    </Link>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <div className="hidden overflow-x-auto md:block">
               <table className="table">
                 <thead>
                   <tr>
@@ -150,8 +196,10 @@ export default async function RecordsPage({ searchParams }: { searchParams: Prom
                           <span className="line-clamp-2 text-xs leading-relaxed text-ink-sub">
                             {v.record_note}
                           </span>
-                        ) : (
+                        ) : v.status === '実施済' ? (
                           <StatusBadge value="未記録" />
+                        ) : (
+                          <span className="text-xs text-ink-mute">—</span>
                         )}
                       </td>
                       <td className="text-right">
@@ -167,6 +215,7 @@ export default async function RecordsPage({ searchParams }: { searchParams: Prom
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </Panel>
       </Content>

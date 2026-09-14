@@ -112,7 +112,13 @@ export default async function SchedulePage({ searchParams }: { searchParams: Pro
                     <th
                       key={d}
                       className={`text-center ${
-                        d === today() ? 'bg-accent-soft text-accent' : wd === 0 ? 'text-ng' : wd === 6 ? 'text-accent' : ''
+                        d === today()
+                          ? 'bg-accent text-white'
+                          : wd === 0
+                            ? 'text-ng'
+                            : wd === 6
+                              ? 'text-accent'
+                              : ''
                       }`}
                     >
                       <div className="tnum">{Number(d.slice(8))}</div>
@@ -132,7 +138,7 @@ export default async function SchedulePage({ searchParams }: { searchParams: Pro
                   {days.map((d) => {
                     const items = cell(row.id, d)
                     return (
-                      <td key={d} className={`p-1 ${d === today() ? 'bg-accent-soft/40' : ''}`}>
+                      <td key={d} className={`p-1 ${d === today() ? 'bg-accent-soft' : ''}`}>
                         <div className="space-y-1">
                           {items.map((v) => (
                             <VisitChip key={v.id} visit={v} week={week} showClient={by === 'staff'} />
