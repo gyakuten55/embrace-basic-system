@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans text-base antialiased;
+  }
+  /* 数字は等幅で桁を揃える（金額・時刻・単位数） */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  ::selection {
+    @apply bg-accent/15;
+  }
+  input,
+  select,
+  textarea,
+  button {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  /* ---------- 入力 ---------- */
+  .field {
+    @apply block w-full rounded border border-line bg-white px-2.5 py-1.5 text-base text-ink
+           outline-none transition-colors placeholder:text-ink-mute
+           focus:border-accent focus:ring-2 focus:ring-accent/15
+           disabled:bg-line-soft disabled:text-ink-sub;
+  }
+  select.field {
+    @apply cursor-pointer pr-7 appearance-none bg-no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235a626b' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-position: right 9px center;
+  }
+  textarea.field {
+    @apply leading-relaxed;
+  }
+  .label {
+    @apply mb-1 block text-xs font-medium text-ink-sub;
+  }
+  .hint {
+    @apply mt-1 text-2xs text-ink-mute;
+  }
+
+  /* ---------- ボタン ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded border px-3 py-1.5
+           text-sm font-medium leading-5 transition-colors
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1
+           focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply border-accent bg-accent text-white hover:bg-accent-hi active:bg-accent-lo;
+  }
+  .btn-default {
+    @apply border-line-hard bg-white text-ink hover:bg-line-soft active:bg-line;
+  }
+  .btn-quiet {
+    @apply border-transparent bg-transparent text-ink-sub hover:bg-line-soft hover:text-ink;
+  }
+  .btn-danger {
+    @apply border-line-hard bg-white text-ng hover:bg-ng-soft;
+  }
+  .btn-sm {
+    @apply px-2 py-1 text-xs;
+  }
+
+  /* ---------- 面 ---------- */
+  .panel {
+    @apply rounded border border-line bg-white;
+  }
+  .panel-head {
+    @apply flex items-center justify-between gap-3 border-b border-line px-4 py-2.5;
+  }
+  .panel-title {
+    @apply text-sm font-semibold text-ink;
+  }
+  .panel-body {
+    @apply px-4 py-3.5;
+  }
+
+  /* ---------- 表 ---------- */
+  .table {
+    @apply w-full border-collapse text-sm;
+  }
+  .table thead th {
+    @apply whitespace-nowrap border-b border-line bg-line-soft px-3 py-2 text-left
+           text-xs font-semibold text-ink-sub;
+  }
+  .table tbody td {
+    @apply border-b border-line-soft px-3 py-2 align-middle;
+  }
+  .table tbody tr:hover td {
+    @apply bg-accent-soft/60;
+  }
+  .table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .table-fixed-head thead th {
+    @apply sticky top-0 z-10;
+  }
+
+  /* ---------- 状態バッジ ---------- */
+  .badge {
+    @apply inline-flex items-center whitespace-nowrap rounded border px-1.5 py-0.5
+           text-2xs font-medium leading-4;
+  }
+  .badge-plain {
+    @apply border-line text-ink-sub;
+  }
+  .badge-ok {
+    @apply border-ok/25 bg-ok-soft text-ok;
+  }
+  .badge-warn {
+    @apply border-warn/25 bg-warn-soft text-warn;
+  }
+  .badge-ng {
+    @apply border-ng/25 bg-ng-soft text-ng;
+  }
+  .badge-accent {
+    @apply border-accent/25 bg-accent-soft text-accent;
+  }
+
+  /* ---------- 定義リスト ---------- */
+  .dl {
+    @apply grid grid-cols-[7.5rem_1fr] text-sm;
+  }
+  .dl > dt {
+    @apply border-b border-line-soft bg-line-soft/50 px-3 py-2 text-xs font-medium text-ink-sub;
+  }
+  .dl > dd {
+    @apply border-b border-line-soft px-3 py-2;
+  }
+
+  /* ---------- タブ ---------- */
+  .tabs {
+    @apply flex items-end gap-0.5 border-b border-line;
+  }
+  .tab {
+    @apply -mb-px border-b-2 border-transparent px-3 py-2 text-sm text-ink-sub
+           transition-colors hover:text-ink;
+  }
+  .tab-on {
+    @apply border-accent font-semibold text-accent;
+  }
+
+  /* ---------- ページ見出し ---------- */
+  .page-title {
+    @apply text-xl font-semibold tracking-tight text-ink;
+  }
+  .page-sub {
+    @apply mt-0.5 text-xs text-ink-sub;
+  }
+  .link {
+    @apply text-accent underline-offset-2 hover:underline;
+  }
+}
