@@ -228,7 +228,7 @@ export default async function DashboardPage() {
                   const isMine = v.staff_id === staff?.id
                   const recorded = Boolean(v.record_id)
                   return (
-                    <li key={v.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5">
+                    <li key={v.id} className="flex items-center gap-x-3 px-4 py-3.5 sm:gap-x-4 sm:px-5">
                       <div
                         className={`tnum flex w-[4.5rem] shrink-0 flex-col rounded-lg px-2 py-1.5 text-center ${
                           v.status === 'キャンセル'
@@ -243,7 +243,7 @@ export default async function DashboardPage() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <Link href={`/clients/${v.client_id}`} className="text-base font-bold hover:text-accent">
+                          <Link href={`/clients/${v.client_id}`} className="whitespace-nowrap text-base font-bold hover:text-accent">
                             {v.client_name}
                             <span className="ml-0.5 text-xs font-medium text-ink-sub">様</span>
                           </Link>
@@ -254,7 +254,9 @@ export default async function DashboardPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <StatusBadge value={recorded ? '記録済' : v.status} />
+                        <span className="hidden sm:inline-flex">
+                          <StatusBadge value={recorded ? '記録済' : v.status} />
+                        </span>
                         {v.status !== 'キャンセル' && (
                           <Link
                             href={`/records/${v.id}`}
