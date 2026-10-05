@@ -89,7 +89,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
 function Brand({ officeName }: { officeName: string }) {
   return (
     <div className="border-b border-white/10 px-4 py-3">
-      <div className="text-sm font-semibold tracking-wide text-white">エンブレース</div>
+      <div className="text-sm font-semibold tracking-wide text-white">エンブレイス</div>
       <div className="mt-0.5 truncate text-2xs text-white/50">{officeName}</div>
     </div>
   )

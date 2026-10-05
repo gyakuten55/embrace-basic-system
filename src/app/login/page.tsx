@@ -11,7 +11,7 @@ export default async function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-navy px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-5">
-          <h1 className="text-2xl font-semibold tracking-tight text-white">エンブレース</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-white">エンブレイス</h1>
           <p className="mt-1 text-sm text-white/55">介護業務システム</p>
         </div>
 

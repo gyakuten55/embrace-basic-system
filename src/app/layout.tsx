@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'エンブレース 介護業務システム',
+  title: 'エンブレイス 介護業務システム',
   description: '訪問介護・障害福祉サービス事業所のための記録・計画・勤怠管理',
 }
 
