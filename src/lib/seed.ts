@@ -109,6 +109,8 @@ export function seedIfEmpty(conn: Database.Database) {
         '06-6531-1001',
         '岩井 誠一',
       )
+    // 1単位の単価（大阪市＝2級地・人件費割合70%の訪問系サービス）
+    conn.prepare('UPDATE office SET unit_price_care = 11.12, unit_price_disability = 11.12 WHERE id = 1').run()
 
     const insStaff = conn.prepare(
       `INSERT INTO staff (code, name, name_kana, role, employment, qualification, hourly_wage, phone, joined_on, password_hash)

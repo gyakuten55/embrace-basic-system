@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { db, now } from '@/lib/db'
 import { requireStaff } from '@/lib/auth'
+import { closedMessage } from '@/lib/billing'
 
 function str(fd: FormData, key: string) {
   return String(fd.get(key) ?? '').trim()
@@ -19,6 +20,10 @@ export async function saveRecord(formData: FormData) {
   const staff = await requireStaff()
   const visitId = Number(str(formData, 'visit_id'))
   if (!visitId) throw new Error('訪問が特定できません。')
+
+  const visit = db().prepare('SELECT date FROM visits WHERE id = ?').get(visitId) as { date: string } | undefined
+  const locked = visit ? closedMessage(visit.date) : null
+  if (locked) redirect(`/records/${visitId}?error=${encodeURIComponent(locked)}`)
 
   const status = str(formData, 'status') || '実施済'
   const actualStart = str(formData, 'actual_start')

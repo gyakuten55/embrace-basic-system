@@ -83,6 +83,28 @@ export default async function SettingsPage({
                   <input name="manager" className="field" defaultValue={office?.manager ?? ''} />
                 </Field>
               </FormRow>
+              <FormRow cols={2}>
+                <Field label="1単位の単価（介護保険）" hint="地域区分とサービスで決まります。例）大阪市・訪問介護 11.12">
+                  <input
+                    name="unit_price_care"
+                    type="number"
+                    step="0.01"
+                    min="10"
+                    className="field tnum"
+                    defaultValue={office?.unit_price_care ?? 10}
+                  />
+                </Field>
+                <Field label="1単位の単価（障害福祉）" hint="請求額の計算に使います。">
+                  <input
+                    name="unit_price_disability"
+                    type="number"
+                    step="0.01"
+                    min="10"
+                    className="field tnum"
+                    defaultValue={office?.unit_price_disability ?? 10}
+                  />
+                </Field>
+              </FormRow>
             </fieldset>
             {canManage && (
               <FormActions>

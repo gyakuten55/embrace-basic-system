@@ -229,6 +229,30 @@ CREATE TABLE IF NOT EXISTS attendances (
   UNIQUE (staff_id, date)
 );
 
+-- 月締め：締めた月の訪問・記録は変更できない
+CREATE TABLE IF NOT EXISTS month_closings (
+  month             TEXT PRIMARY KEY,
+  closed_at         TEXT NOT NULL,
+  closed_by         INTEGER REFERENCES staff(id) ON DELETE SET NULL
+);
+
+-- 締めた時点の請求額（利用者ごと）。lines は サービス種別ごとの内訳(JSON)
+CREATE TABLE IF NOT EXISTS invoices (
+  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  month             TEXT NOT NULL,
+  client_id         INTEGER NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  insurance_type    TEXT NOT NULL DEFAULT '',
+  burden_ratio      INTEGER NOT NULL DEFAULT 1,
+  visits            INTEGER NOT NULL DEFAULT 0,
+  units             INTEGER NOT NULL DEFAULT 0,
+  unit_price        REAL NOT NULL DEFAULT 10,
+  total_yen         INTEGER NOT NULL DEFAULT 0,
+  insurance_yen     INTEGER NOT NULL DEFAULT 0,
+  copay_yen         INTEGER NOT NULL DEFAULT 0,
+  lines             TEXT NOT NULL DEFAULT '[]',
+  UNIQUE (month, client_id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_visits_date        ON visits(date);
 CREATE INDEX IF NOT EXISTS idx_visits_client      ON visits(client_id, date);
 CREATE INDEX IF NOT EXISTS idx_visits_staff       ON visits(staff_id, date);
@@ -240,6 +264,16 @@ CREATE INDEX IF NOT EXISTS idx_attendance_month   ON attendances(date);
 
 function migrate(conn: Database.Database) {
   conn.exec(SCHEMA)
+  addColumn(conn, 'office', 'unit_price_care', 'REAL NOT NULL DEFAULT 10')
+  addColumn(conn, 'office', 'unit_price_disability', 'REAL NOT NULL DEFAULT 10')
+}
+
+/** 既存のデータベースにも列を足せるよう、無いときだけ追加する */
+function addColumn(conn: Database.Database, table: string, column: string, definition: string) {
+  const cols = conn.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[]
+  if (!cols.some((c) => c.name === column)) {
+    conn.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`)
+  }
 }
 
 export function now() {

@@ -13,6 +13,7 @@ export function VisitForm({
   services,
   defaults,
   week,
+  locked = false,
 }: {
   visit?: VisitRow
   clients: Client[]
@@ -20,6 +21,7 @@ export function VisitForm({
   services: ServiceCode[]
   defaults: { date: string; staffId?: number; clientId?: number }
   week: string
+  locked?: boolean
 }) {
   const v = visit
   return (
@@ -109,13 +111,13 @@ export function VisitForm({
           <Link href={`/schedule?week=${week}`} className="btn btn-default">
             キャンセル
           </Link>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" disabled={locked}>
             {v ? '更新する' : '登録する'}
           </button>
         </FormActions>
       </form>
 
-      {v && (
+      {v && !locked && (
         <form action={deleteVisit} className="border-t border-line px-4 py-3">
           <input type="hidden" name="id" value={v.id} />
           <input type="hidden" name="week" value={week} />

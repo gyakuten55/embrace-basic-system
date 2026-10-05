@@ -105,6 +105,8 @@ export function officeInfo() {
         phone: string
         fax: string
         manager: string
+        unit_price_care: number
+        unit_price_disability: number
       }
     | undefined
 }

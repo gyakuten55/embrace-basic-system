@@ -15,18 +15,27 @@ export async function saveOffice(formData: FormData) {
     redirect('/settings?error=' + encodeURIComponent('事業所情報の変更は管理者のみ行えます。'))
   }
 
+  const unitPrice = (key: string) => {
+    const n = Number(str(formData, key))
+    return Number.isFinite(n) && n >= 10 ? Math.round(n * 100) / 100 : 10
+  }
+
   db()
     .prepare(
-      `INSERT INTO office (id, name, office_number, postal_code, address, phone, fax, manager)
-       VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+      `INSERT INTO office (id, name, office_number, postal_code, address, phone, fax, manager,
+         unit_price_care, unit_price_disability)
+       VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(id) DO UPDATE SET
          name = excluded.name, office_number = excluded.office_number,
          postal_code = excluded.postal_code, address = excluded.address,
-         phone = excluded.phone, fax = excluded.fax, manager = excluded.manager`,
+         phone = excluded.phone, fax = excluded.fax, manager = excluded.manager,
+         unit_price_care = excluded.unit_price_care,
+         unit_price_disability = excluded.unit_price_disability`,
     )
     .run(
       str(formData, 'name'), str(formData, 'office_number'), str(formData, 'postal_code'),
       str(formData, 'address'), str(formData, 'phone'), str(formData, 'fax'), str(formData, 'manager'),
+      unitPrice('unit_price_care'), unitPrice('unit_price_disability'),
     )
 
   revalidatePath('/settings')

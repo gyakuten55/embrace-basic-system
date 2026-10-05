@@ -223,6 +223,45 @@ check('承諾すると削除される', !(await page.textContent('table')).inclu
 const gone = await page.request.get(`${BASE}/clients/${clientId}`)
 check('削除後の詳細は404になる', gone.status() === 404, `status=${gone.status()}`)
 
+// --- 月締め・請求 ---
+log('\n[13] 月締め・請求')
+await page.goto(`${BASE}/billing?month=2026-10`)
+const openMonth = await page.textContent('body')
+check('当月は予定のままの訪問が残っている', openMonth.includes('予定のまま'))
+check('片づくまで締めるボタンは押せない', await page.isDisabled('button:has-text("2026年10月を締める")'))
+
+await page.goto(`${BASE}/billing?month=2026-09`)
+const preview = await page.textContent('body')
+check('締め前は見込みと表示される', preview.includes('締め前'))
+check('請求額が計算される', /利用者負担/.test(preview) && /\d{1,3}(,\d{3})*円/.test(preview))
+await page.screenshot({ path: `${SHOTS}/12-billing-before.png`, fullPage: true })
+page.once('dialog', async (d) => { await d.accept() })
+await Promise.all([page.waitForURL(/saved=closed/), page.click('button:has-text("2026年9月を締める")')])
+const closedBody = await page.textContent('body')
+check('月を締められる', closedBody.includes('月を締めました') && closedBody.includes('締め済'))
+await page.screenshot({ path: `${SHOTS}/13-billing-closed.png`, fullPage: true })
+
+const invoiceHref = await page.getAttribute('a:has-text("請求書")', 'href')
+await page.goto(`${BASE}${invoiceHref}`)
+const invoice = await page.textContent('body')
+check('請求書に請求額と内訳が出る', invoice.includes('ご請求額') && invoice.includes('費用総額') && !invoice.includes('見込み（締め前）'))
+await page.screenshot({ path: `${SHOTS}/14-invoice.png`, fullPage: true })
+
+const billCsv = await (await page.request.get(`${BASE}/api/billing/csv?month=2026-09`)).text()
+check('請求CSVが取得できる', billCsv.includes('利用者負担額') && billCsv.includes('締め済'))
+
+await page.goto(`${BASE}/records?date=2026-09-15`)
+const recordHref = await page.getAttribute('a[href^="/records/"]', 'href')
+await page.goto(`${BASE}${recordHref}`)
+check('締めた月の記録は保存できない', await page.isDisabled('button:has-text("締め済みのため保存できません")'))
+
+await page.goto(`${BASE}/billing?month=2026-09`)
+page.once('dialog', async (d) => { await d.accept() })
+await Promise.all([page.waitForURL(/saved=reopened/), page.click('button:has-text("締めを解除")')])
+check('締めを解除できる', (await page.textContent('body')).includes('締めを解除しました'))
+await page.goto(`${BASE}${recordHref}`)
+check('解除後は記録を保存できる', !(await page.isDisabled('button:has-text("記録を保存する")')))
+
 await browser.close()
 log(`\n${failures === 0 ? '全て成功' : `${failures} 件の失敗`}`)
 process.exit(failures === 0 ? 0 : 1)

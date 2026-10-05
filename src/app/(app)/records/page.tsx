@@ -8,7 +8,7 @@ import { ConfirmButton } from '@/components/confirm-button'
 
 export const dynamic = 'force-dynamic'
 
-type Search = { date?: string; staff?: string; view?: string; saved?: string }
+type Search = { date?: string; staff?: string; view?: string; saved?: string; error?: string }
 
 export default async function RecordsPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams
@@ -33,6 +33,9 @@ export default async function RecordsPage({ searchParams }: { searchParams: Prom
       />
 
       <Content className="space-y-3">
+        {sp.error && (
+          <p className="rounded border border-ng/25 bg-ng-soft px-3 py-2 text-sm text-ng">{sp.error}</p>
+        )}
         {sp.saved && (
           <p className="rounded border border-ok/25 bg-ok-soft px-3 py-2 text-sm text-ok">
             記録を保存しました。

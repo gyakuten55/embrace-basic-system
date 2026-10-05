@@ -6,11 +6,19 @@ import { longDate, shortDate } from '@/lib/date'
 import { Breadcrumb, Content, Panel, PageHeader, StatusBadge } from '@/components/ui'
 import { RecordForm, type RecordInitial } from './record-form'
 import type { VisitRecord } from '@/lib/types'
+import { closedMessage } from '@/lib/billing'
 
 export const dynamic = 'force-dynamic'
 
-export default async function RecordPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function RecordPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ error?: string }>
+}) {
   const { id } = await params
+  const sp = await searchParams
   const visit = visitById(Number(id))
   if (!visit) notFound()
 
@@ -65,6 +73,8 @@ export default async function RecordPage({ params }: { params: Promise<{ id: str
     ai_used: record?.ai_used === 1,
   }
 
+  const locked = closedMessage(visit.date)
+
   return (
     <>
       <PageHeader
@@ -88,9 +98,15 @@ export default async function RecordPage({ params }: { params: Promise<{ id: str
           ]}
         />
 
+        {(locked || sp.error) && (
+          <p className="mt-3 rounded border border-warn/25 bg-warn-soft px-3 py-2 text-sm text-warn">
+            {locked ?? sp.error}
+          </p>
+        )}
+
         <div className="mt-3 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_19rem]">
           <div className="min-w-0">
-            <RecordForm visit={visit} initial={initial} />
+            <RecordForm visit={visit} initial={initial} locked={Boolean(locked)} />
           </div>
 
           <aside className="space-y-4 xl:sticky xl:top-0 xl:self-start">

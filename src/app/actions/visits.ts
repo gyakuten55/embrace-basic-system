@@ -4,7 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { db, now } from '@/lib/db'
 import { requireStaff } from '@/lib/auth'
-import { monthDates, weekdayOf } from '@/lib/date'
+import { formatMonth, monthDates, weekdayOf } from '@/lib/date'
+import { closedMessage, isMonthClosed } from '@/lib/billing'
 
 function str(fd: FormData, key: string) {
   return String(fd.get(key) ?? '').trim()
@@ -30,6 +31,14 @@ export async function saveVisit(formData: FormData) {
 
   if (!fields.client_id || !fields.date) {
     throw new Error('利用者と日付は必須です。')
+  }
+
+  const before = id
+    ? (db().prepare('SELECT date FROM visits WHERE id = ?').get(id) as { date: string } | undefined)
+    : undefined
+  const locked = closedMessage(fields.date) ?? (before ? closedMessage(before.date) : null)
+  if (locked) {
+    redirect(`/schedule?week=${weekMondayOf(fields.date)}&error=${encodeURIComponent(locked)}`)
   }
 
   if (id) {
@@ -63,6 +72,11 @@ export async function deleteVisit(formData: FormData) {
   await requireStaff()
   const id = Number(str(formData, 'id'))
   const week = str(formData, 'week')
+  const visit = db().prepare('SELECT date FROM visits WHERE id = ?').get(id) as { date: string } | undefined
+  const locked = visit ? closedMessage(visit.date) : null
+  if (locked) {
+    redirect(`/schedule${week ? `?week=${week}&` : '?'}error=${encodeURIComponent(locked)}`)
+  }
   db().prepare('DELETE FROM visits WHERE id = ?').run(id)
   revalidatePath('/schedule')
   redirect(`/schedule${week ? `?week=${week}` : ''}`)
@@ -73,6 +87,13 @@ export async function confirmVisits(formData: FormData) {
   await requireStaff()
   const ids = formData.getAll('visit_id').map(Number).filter(Boolean)
   if (ids.length === 0) return
+  const dates = db()
+    .prepare(`SELECT DISTINCT date FROM visits WHERE id IN (${ids.map(() => '?').join(',')})`)
+    .all(...ids) as { date: string }[]
+  for (const { date } of dates) {
+    const locked = closedMessage(date)
+    if (locked) redirect(`/records?date=${date}&error=${encodeURIComponent(locked)}`)
+  }
   const stmt = db().prepare(
     `UPDATE visits
      SET status='実施済',
@@ -98,6 +119,11 @@ export async function generateSchedule(formData: FormData) {
   const clientIds = formData.getAll('client_id').map(Number).filter(Boolean)
   if (!month || clientIds.length === 0) {
     redirect(`/schedule/generate?month=${month}&error=対象の利用者を選んでください`)
+  }
+  if (isMonthClosed(month)) {
+    redirect(
+      `/schedule/generate?month=${month}&error=${encodeURIComponent(`${formatMonth(month)}は締め済みのため予定を作成できません。`)}`,
+    )
   }
 
   const placeholders = clientIds.map(() => '?').join(',')

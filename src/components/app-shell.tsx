@@ -16,7 +16,13 @@ const GROUPS: Group[] = [
       { href: '/', label: 'ダッシュボード', icon: 'home' },
       { href: '/schedule', label: 'スケジュール', icon: 'calendar' },
       { href: '/records', label: 'サービス記録', icon: 'pen' },
+    ],
+  },
+  {
+    heading: '月末の業務',
+    items: [
       { href: '/results', label: '実績・集計', icon: 'chart' },
+      { href: '/billing', label: '月締め・請求', icon: 'yen' },
     ],
   },
   {

@@ -81,6 +81,12 @@ export const Icon = {
       <path d="M4.4 13.4V8M8 13.4V3.6M11.6 13.4V6.4" />
     </Svg>
   ),
+  yen: (p: Props) => (
+    <Svg {...p}>
+      <path d="M4.4 2.4 8 7.6l3.6-5.2" />
+      <path d="M8 7.6v6M5 8.6h6M5 11h6" />
+    </Svg>
+  ),
   gear: (p: Props) => (
     <Svg {...p}>
       <circle cx="8" cy="8" r="2.2" />

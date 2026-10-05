@@ -46,7 +46,15 @@ export type RecordInitial = {
 const MEAL_OPTIONS = ['', '全量', '8割', '半量', '少量', '拒否', '対象外']
 const BATH_OPTIONS = ['', '実施', '清拭', '部分浴', '中止']
 
-export function RecordForm({ visit, initial }: { visit: VisitRow; initial: RecordInitial }) {
+export function RecordForm({
+  visit,
+  initial,
+  locked = false,
+}: {
+  visit: VisitRow
+  initial: RecordInitial
+  locked?: boolean
+}) {
   const [status, setStatus] = useState(visit.status === 'キャンセル' ? 'キャンセル' : '実施済')
   const [cancelReason, setCancelReason] = useState(visit.cancel_reason)
   const [actualStart, setActualStart] = useState(visit.actual_start || visit.plan_start)
@@ -461,8 +469,8 @@ export function RecordForm({ visit, initial }: { visit: VisitRow; initial: Recor
           <Link href={`/records?date=${visit.date}`} className="btn btn-default">
             戻る
           </Link>
-          <button type="submit" className="btn btn-primary px-6">
-            記録を保存する
+          <button type="submit" className="btn btn-primary px-6" disabled={locked}>
+            {locked ? '締め済みのため保存できません' : '記録を保存する'}
           </button>
         </FormActions>
       </Panel>
