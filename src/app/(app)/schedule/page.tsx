@@ -64,10 +64,10 @@ export default async function SchedulePage({ searchParams }: { searchParams: Pro
 
       <Content className="space-y-3">
         {sp.error && (
-          <p className="rounded border border-ng/25 bg-ng-soft px-3 py-2 text-sm text-ng">{sp.error}</p>
+          <p className="notice border-ng/20 bg-ng-soft text-sm text-ng">{sp.error}</p>
         )}
         {sp.created && (
-          <p className="rounded border border-ok/25 bg-ok-soft px-3 py-2 text-sm text-ok">
+          <p className="notice border-ok/20 bg-ok-soft text-sm text-ok">
             訪問予定を {sp.created} 件作成しました。
             {Number(sp.skipped) > 0 && `（重複のため ${sp.skipped} 件はスキップ）`}
           </p>

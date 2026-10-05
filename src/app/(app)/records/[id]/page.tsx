@@ -99,7 +99,7 @@ export default async function RecordPage({
         />
 
         {(locked || sp.error) && (
-          <p className="mt-3 rounded border border-warn/25 bg-warn-soft px-3 py-2 text-sm text-warn">
+          <p className="mt-3 notice border-warn/20 bg-warn-soft text-sm text-warn">
             {locked ?? sp.error}
           </p>
         )}

@@ -21,7 +21,7 @@ export default async function NewClientPage({
       <Content className="max-w-5xl space-y-3">
         <Breadcrumb items={[{ label: '利用者', href: '/clients' }, { label: '新規登録' }]} />
         {sp.error && (
-          <p className="rounded border border-ng/25 bg-ng-soft px-3 py-2 text-sm text-ng">{sp.error}</p>
+          <p className="notice border-ng/20 bg-ng-soft text-sm text-ng">{sp.error}</p>
         )}
         <ClientForm nextCode={nextCode} />
       </Content>

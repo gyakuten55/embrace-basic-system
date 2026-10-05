@@ -31,7 +31,7 @@ export default async function EditClientPage({
           ]}
         />
         {sp.error && (
-          <p className="rounded border border-ng/25 bg-ng-soft px-3 py-2 text-sm text-ng">{sp.error}</p>
+          <p className="notice border-ng/20 bg-ng-soft text-sm text-ng">{sp.error}</p>
         )}
         <ClientForm client={client} />
 

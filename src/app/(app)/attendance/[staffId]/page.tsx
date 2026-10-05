@@ -60,7 +60,7 @@ export default async function StaffAttendancePage({
         />
 
         {sp.saved && (
-          <p className="rounded border border-ok/25 bg-ok-soft px-3 py-2 text-sm text-ok">
+          <p className="notice border-ok/20 bg-ok-soft text-sm text-ok">
             {formatMonth(month)}の勤怠を保存しました。
           </p>
         )}

@@ -62,7 +62,7 @@ export default async function CarePlansPage({
 
       <Content className="space-y-3">
         {expiring.length > 0 && (
-          <p className="rounded border border-warn/25 bg-warn-soft px-3 py-2 text-sm text-warn">
+          <p className="notice border-warn/20 bg-warn-soft text-sm text-warn">
             計画期間の終了が2か月以内の計画書が {expiring.length} 件あります。見直しの準備を進めてください。
           </p>
         )}
@@ -129,7 +129,9 @@ export default async function CarePlansPage({
                             <span className="ml-1 badge badge-ng">期間終了</span>
                           )}
                         </td>
-                        <td className="line-clamp-2 text-xs text-ink-sub">{r.short_goal || '—'}</td>
+                        <td className="text-xs text-ink-sub">
+                        <div className="line-clamp-2">{r.short_goal || '—'}</div>
+                      </td>
                         <td className="tnum text-right text-xs text-ink-sub">{r.items}件</td>
                         <td className="text-xs text-ink-sub">{r.author_name ?? '—'}</td>
                         <td>

@@ -35,7 +35,7 @@ export default async function EditVisitPage({
       <Content className="max-w-3xl space-y-3">
         <Breadcrumb items={[{ label: 'スケジュール', href: '/schedule' }, { label: '予定の編集' }]} />
         {locked && (
-          <p className="rounded border border-warn/25 bg-warn-soft px-3 py-2 text-sm text-warn">{locked}</p>
+          <p className="notice border-warn/20 bg-warn-soft text-sm text-warn">{locked}</p>
         )}
         <VisitForm
           visit={visit}

@@ -137,17 +137,17 @@ export function RecordForm({
 
       {/* 実施状況 */}
       <Panel title="実施状況" flush>
-        <div className="space-y-3.5 px-4 py-3.5">
+        <div className="space-y-4 px-5 py-4">
           <div className="flex flex-wrap gap-2">
             {['実施済', 'キャンセル'].map((s) => (
               <label
                 key={s}
-                className={`flex cursor-pointer items-center gap-2 rounded border px-3 py-1.5 text-sm transition-colors ${
+                className={`flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 px-5 text-base font-semibold transition sm:flex-none ${
                   status === s
                     ? s === '実施済'
-                      ? 'border-ok bg-ok-soft font-medium text-ok'
-                      : 'border-ng bg-ng-soft font-medium text-ng'
-                    : 'border-line-hard bg-white text-ink-sub hover:bg-line-soft'
+                      ? 'border-ok bg-ok-soft text-ok'
+                      : 'border-ng bg-ng-soft text-ng'
+                    : 'border-line bg-white text-ink-sub hover:border-line-hard hover:bg-canvas'
                 }`}
               >
                 <input
@@ -158,7 +158,8 @@ export function RecordForm({
                   onChange={() => setStatus(s)}
                   className="sr-only"
                 />
-                {s}
+                {status === s && <Icon.check className="h-4 w-4" />}
+                {s === '実施済' ? '実施した' : '中止した（キャンセル）'}
               </label>
             ))}
           </div>
@@ -214,38 +215,78 @@ export function RecordForm({
       {!cancelled && (
         <>
           {/* 音声入力 */}
-          <Panel
-            title="音声で記録を入力"
-            flush
-            actions={
-              engine && <span className="badge badge-accent">整形: {engine}</span>
-            }
-          >
-            <div className="space-y-3 px-4 py-3.5">
-              <div className="flex flex-wrap items-center gap-2">
+          <section className="overflow-hidden rounded-xl border border-accent/25 bg-gradient-to-b from-accent-soft to-white shadow-card">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
+              <div>
+                <h2 className="flex items-center gap-2 text-[15px] font-bold tracking-tight text-accent-lo">
+                  <Icon.sparkle className="h-4 w-4 text-accent" />
+                  話して記録する
+                </h2>
+                <ol className="mt-1 flex flex-wrap gap-x-3 text-2xs font-medium text-ink-sub">
+                  <li>① マイクを押して話す</li>
+                  <li>② AIで整える</li>
+                  <li>③ 確認して保存</li>
+                </ol>
+              </div>
+              {engine && <span className="badge badge-accent">整形: {engine}</span>}
+            </div>
+
+            <div className="space-y-3 px-5 pb-5 pt-4">
+              <div className="flex flex-wrap items-center gap-3">
                 {speech.listening ? (
-                  <button type="button" className="btn btn-danger" onClick={speech.stop}>
-                    <span className="mr-0.5 inline-block h-2 w-2 animate-pulse rounded-full bg-ng" />
-                    録音を止める
+                  <button
+                    type="button"
+                    onClick={speech.stop}
+                    className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-ng text-white shadow-lift transition active:scale-95"
+                    aria-label="録音を止める"
+                  >
+                    <span className="absolute inset-0 animate-ping rounded-full bg-ng/40" />
+                    <span className="relative h-5 w-5 rounded-[4px] bg-white" />
                   </button>
                 ) : (
                   <button
                     type="button"
-                    className="btn btn-primary"
                     onClick={speech.start}
                     disabled={!speech.supported}
+                    className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-lift transition hover:bg-accent-hi active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="話して入力する"
                   >
-                    <Icon.mic className="h-4 w-4" />
-                    話して入力する
+                    <Icon.mic className="h-7 w-7" />
                   </button>
                 )}
-                <button type="button" className="btn btn-default" onClick={runAi} disabled={working}>
-                  {working ? '整形中…' : 'AIで記録を整える'}
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-bold">
+                    {speech.listening ? '聞き取り中… 話し終わったら■を押してください' : 'マイクを押して、いつもの言葉で話してください'}
+                  </div>
+                  <div className="text-2xs text-ink-sub">
+                    例）体温36度5分、血圧128の76。お風呂は微熱があるので見送って清拭で対応しました。
+                  </div>
+                </div>
+              </div>
+
+              {!speech.supported && (
+                <p className="text-2xs text-ink-mute">
+                  このブラウザは音声入力に対応していません。下の欄に直接入力しても、AI整形は利用できます。
+                </p>
+              )}
+              {speech.error && <p className="notice border-warn/20 bg-warn-soft py-2 text-xs text-warn">{speech.error}</p>}
+
+              <textarea
+                className="field min-h-[7rem] bg-white"
+                value={raw + (speech.interim ? `　${speech.interim}` : '')}
+                onChange={(e) => setRaw(e.target.value)}
+                placeholder="話した内容がここに入ります。文字で入力してもかまいません。"
+              />
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" className="btn btn-primary btn-lg" onClick={runAi} disabled={working || !raw.trim()}>
+                  <Icon.sparkle className="h-4 w-4" />
+                  {working ? '整えています…' : 'AIで記録を整える'}
                 </button>
                 {raw && (
                   <button
                     type="button"
-                    className="btn btn-quiet btn-sm"
+                    className="btn btn-quiet"
                     onClick={() => {
                       setRaw('')
                       setCorrections([])
@@ -255,33 +296,14 @@ export function RecordForm({
                     クリア
                   </button>
                 )}
+                <p className="w-full text-2xs leading-5 text-ink-mute sm:ml-2 sm:w-auto sm:flex-1">
+                  バイタル・実施項目を自動で振り分け、特記事項を記録用の文章に整えます。整えた後も手直しできます。
+                </p>
               </div>
 
-              {!speech.supported && (
-                <p className="text-2xs text-ink-mute">
-                  このブラウザは音声入力に対応していません。下の欄に直接入力しても、AI整形は利用できます。
-                </p>
-              )}
-              {speech.error && (
-                <p className="rounded border border-warn/25 bg-warn-soft px-2.5 py-1.5 text-xs text-warn">
-                  {speech.error}
-                </p>
-              )}
-
-              <textarea
-                className="field min-h-[6.5rem]"
-                value={raw + (speech.interim ? `　${speech.interim}` : '')}
-                onChange={(e) => setRaw(e.target.value)}
-                placeholder="例）体温36度5分、血圧128の76。お風呂は微熱があるので見送って清拭で対応しました。麦茶を200ml飲まれています。"
-              />
-              <p className="hint">
-                話した内容はそのまま残ります。「AIで記録を整える」を押すと、バイタルや実施項目を自動で振り分け、
-                特記事項を記録用の文章に整えます。整えた後も自由に手直しできます。
-              </p>
-
               {corrections.length > 0 && (
-                <div className="flex flex-wrap items-center gap-1.5 border-t border-line-soft pt-3">
-                  <span className="text-2xs text-ink-sub">用語の補正:</span>
+                <div className="flex flex-wrap items-center gap-1.5 border-t border-accent/15 pt-3">
+                  <span className="text-2xs font-semibold text-ink-sub">介護用語の補正:</span>
                   {corrections.map((c, i) => (
                     <span key={i} className="badge badge-plain tnum">
                       {c.from} → <span className="ml-0.5 font-semibold text-accent">{c.to}</span>
@@ -289,15 +311,13 @@ export function RecordForm({
                   ))}
                 </div>
               )}
-              {aiError && (
-                <p className="rounded border border-ng/25 bg-ng-soft px-2.5 py-1.5 text-xs text-ng">{aiError}</p>
-              )}
+              {aiError && <p className="notice border-ng/20 bg-ng-soft py-2 text-xs text-ng">{aiError}</p>}
             </div>
-          </Panel>
+          </section>
 
           {/* バイタル */}
           <Panel title="バイタル・摂取状況" flush>
-            <div className="space-y-3.5 px-4 py-3.5">
+            <div className="space-y-4 px-5 py-4">
               <FormRow cols={4}>
                 <Field label="体温 (℃)">
                   <input
@@ -438,7 +458,7 @@ export function RecordForm({
 
           {/* 記録本文 */}
           <Panel title="記録" flush>
-            <div className="space-y-3.5 px-4 py-3.5">
+            <div className="space-y-4 px-5 py-4">
               <Field label="心身の状態">
                 <textarea
                   name="condition"
@@ -469,7 +489,7 @@ export function RecordForm({
           <Link href={`/records?date=${visit.date}`} className="btn btn-default">
             戻る
           </Link>
-          <button type="submit" className="btn btn-primary px-6" disabled={locked}>
+          <button type="submit" className="btn btn-primary btn-lg" disabled={locked}>
             {locked ? '締め済みのため保存できません' : '記録を保存する'}
           </button>
         </FormActions>

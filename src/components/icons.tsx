@@ -8,7 +8,7 @@ function Svg({ children, className }: Props & { children: React.ReactNode }) {
       viewBox="0 0 16 16"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.4"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -146,4 +146,42 @@ export const Icon = {
       <path d="M8 6.4v3.2M8 11.6v.1" />
     </Svg>
   ),
+  menu: (p: Props) => (
+    <Svg {...p}>
+      <path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" />
+    </Svg>
+  ),
+  close: (p: Props) => (
+    <Svg {...p}>
+      <path d="m4 4 8 8M12 4l-8 8" />
+    </Svg>
+  ),
+  arrow: (p: Props) => (
+    <Svg {...p}>
+      <path d="M3 8h10M9 4l4 4-4 4" />
+    </Svg>
+  ),
+  sparkle: (p: Props) => (
+    <Svg {...p}>
+      <path d="M8 2.2 9.3 6.7 13.8 8 9.3 9.3 8 13.8 6.7 9.3 2.2 8l4.5-1.3z" />
+    </Svg>
+  ),
+  lock: (p: Props) => (
+    <Svg {...p}>
+      <rect x="3" y="7" width="10" height="7" rx="1.5" />
+      <path d="M5.4 7V5a2.6 2.6 0 0 1 5.2 0v2" />
+    </Svg>
+  ),
+}
+
+/** エンブレイスのロゴマーク：寄り添う2つの円弧（支える手）と中心の点（利用者） */
+export function LogoMark({ className = 'h-9 w-9' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} aria-hidden="true">
+      <rect width="40" height="40" rx="11" fill="#0f6b60" />
+      <path d="M11 22.5a9 9 0 0 0 18 0" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+      <path d="M14.5 17.5a5.5 5.5 0 0 1 11 0" fill="none" stroke="#9fd8cc" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="20" cy="21.5" r="2.6" fill="#f6c46a" />
+    </svg>
+  )
 }

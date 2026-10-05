@@ -34,16 +34,16 @@ export default async function RecordsPage({ searchParams }: { searchParams: Prom
 
       <Content className="space-y-3">
         {sp.error && (
-          <p className="rounded border border-ng/25 bg-ng-soft px-3 py-2 text-sm text-ng">{sp.error}</p>
+          <p className="notice border-ng/20 bg-ng-soft text-sm text-ng">{sp.error}</p>
         )}
         {sp.saved && (
-          <p className="rounded border border-ok/25 bg-ok-soft px-3 py-2 text-sm text-ok">
+          <p className="notice border-ok/20 bg-ok-soft text-sm text-ok">
             記録を保存しました。
           </p>
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="tabs border-0">
+          <div className="tabs">
             <Link
               href={`/records?date=${date}`}
               className={`tab ${view === 'day' ? 'tab-on' : ''}`}
@@ -69,7 +69,7 @@ export default async function RecordsPage({ searchParams }: { searchParams: Prom
         </div>
 
         {view === 'day' && unrecordedToday > 0 && (
-          <p className="rounded border border-warn/25 bg-warn-soft px-3 py-2 text-sm text-warn">
+          <p className="notice border-warn/20 bg-warn-soft text-sm text-warn">
             この日の実施済みの訪問のうち {unrecordedToday} 件が未記録です。
           </p>
         )}
@@ -113,16 +113,19 @@ export default async function RecordsPage({ searchParams }: { searchParams: Prom
             {/* スマートフォン: 1件ずつのカード表示（ヘルパーが訪問先で使う） */}
             <ul className="divide-y divide-line-soft md:hidden">
               {rows.map((v) => (
-                <li key={v.id} className="px-4 py-3">
+                <li key={v.id} className="px-4 py-3.5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="tnum text-xs text-ink-sub">
+                      <div className="tnum text-sm font-bold text-accent">
                         {view === 'unrecorded' && <span className="mr-1.5">{shortDate(v.date)}</span>}
                         {v.status === '実施済' && v.actual_start
                           ? `${v.actual_start}–${v.actual_end}`
                           : `${v.plan_start}–${v.plan_end}`}
                       </div>
-                      <div className="mt-0.5 text-base font-medium">{v.client_name}</div>
+                      <div className="mt-0.5 text-lg font-bold leading-snug">
+                        {v.client_name}
+                        <span className="ml-0.5 text-xs font-medium text-ink-sub">様</span>
+                      </div>
                       <div className="text-xs text-ink-sub">
                         {v.service_name ?? 'サービス未設定'}
                         <span className="mx-1.5 text-line-hard">/</span>

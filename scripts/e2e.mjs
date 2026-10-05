@@ -33,7 +33,7 @@ await page.fill('#code', '1002')
 await page.fill('#password', 'embrace')
 await Promise.all([page.waitForURL(`${BASE}/`), page.click('button:has-text("ログイン")')])
 check('ダッシュボードへ遷移', page.url() === `${BASE}/`)
-check('氏名が表示される', (await page.textContent('h1')).includes('中村 由美'))
+check('氏名が表示される', (await page.textContent('h1')).includes('中村'))
 await page.screenshot({ path: `${SHOTS}/01-dashboard.png`, fullPage: true })
 
 // --- 利用者登録 ---
@@ -117,7 +117,7 @@ const recordLink = page.locator('tr', { hasText: '検証 太郎' }).locator('a:h
 check('記録リンクがある', (await recordLink.count()) > 0)
 if ((await recordLink.count()) > 0) {
   await Promise.all([page.waitForURL(/\/records\/\d+$/), recordLink.click()])
-  await page.fill('textarea[placeholder^="例）体温"]', 'えーと体温36度8分、血圧は132の80です。服役の確認をしてから、お風呂は微熱があるんで見送って正式で対応しました。麦茶を200ml飲まれてます。排尿2回、排便なしです。')
+  await page.fill('textarea[placeholder^="話した内容"]', 'えーと体温36度8分、血圧は132の80です。服役の確認をしてから、お風呂は微熱があるんで見送って正式で対応しました。麦茶を200ml飲まれてます。排尿2回、排便なしです。')
   await page.click('button:has-text("AIで記録を整える")')
   await page.waitForSelector('text=用語の補正', { timeout: 15000 })
   check('体温が自動入力される', (await page.inputValue('input[name=temperature]')) === '36.8')

@@ -24,10 +24,10 @@ export default async function EditStaffPage({
       <Content className="max-w-4xl space-y-3">
         <Breadcrumb items={[{ label: '職員', href: '/staff' }, { label: staff.name }]} />
         {sp.error && (
-          <p className="rounded border border-ng/25 bg-ng-soft px-3 py-2 text-sm text-ng">{sp.error}</p>
+          <p className="notice border-ng/20 bg-ng-soft text-sm text-ng">{sp.error}</p>
         )}
         {sp.saved === 'password' && (
-          <p className="rounded border border-ok/25 bg-ok-soft px-3 py-2 text-sm text-ok">
+          <p className="notice border-ok/20 bg-ok-soft text-sm text-ok">
             パスワードを再設定しました。本人に伝えてください。
           </p>
         )}

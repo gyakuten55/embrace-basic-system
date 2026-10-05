@@ -55,7 +55,7 @@ export default async function MeetingsPage({
       />
 
       <Content className="space-y-3">
-        <div className="tabs border-0">
+        <div className="tabs">
           <Link href="/meetings" className={`tab ${kind === 'all' ? 'tab-on' : ''}`}>
             すべて
           </Link>
@@ -114,7 +114,9 @@ export default async function MeetingsPage({
                       </td>
                       <td className="text-xs text-ink-sub">{m.place || '—'}</td>
                       <td className="tnum text-right text-xs text-ink-sub">{m.attendees}名</td>
-                      <td className="line-clamp-2 text-xs leading-relaxed text-ink-sub">{m.conclusion || '—'}</td>
+                      <td className="text-xs leading-relaxed text-ink-sub">
+                        <div className="line-clamp-2">{m.conclusion || '—'}</div>
+                      </td>
                       <td className="text-xs text-ink-sub">{m.recorder_name ?? '—'}</td>
                     </tr>
                   ))}

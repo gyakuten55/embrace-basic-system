@@ -57,10 +57,10 @@ export default async function BillingPage({
 
       <Content className="space-y-3">
         {sp.saved && SAVED[sp.saved] && (
-          <p className="rounded border border-ok/25 bg-ok-soft px-3 py-2 text-sm text-ok">{SAVED[sp.saved]}</p>
+          <p className="notice border-ok/20 bg-ok-soft text-sm text-ok">{SAVED[sp.saved]}</p>
         )}
         {sp.error && (
-          <p className="rounded border border-ng/25 bg-ng-soft px-3 py-2 text-sm text-ng">{sp.error}</p>
+          <p className="notice border-ng/20 bg-ng-soft text-sm text-ng">{sp.error}</p>
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-3">

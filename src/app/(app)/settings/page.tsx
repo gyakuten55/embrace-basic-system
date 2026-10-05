@@ -41,12 +41,12 @@ export default async function SettingsPage({
 
       <Content className="max-w-5xl space-y-4">
         {sp.saved && MESSAGES[sp.saved] && (
-          <p className="rounded border border-ok/25 bg-ok-soft px-3 py-2 text-sm text-ok">
+          <p className="notice border-ok/20 bg-ok-soft text-sm text-ok">
             {MESSAGES[sp.saved]}
           </p>
         )}
         {sp.error && (
-          <p className="rounded border border-ng/25 bg-ng-soft px-3 py-2 text-sm text-ng">{sp.error}</p>
+          <p className="notice border-ng/20 bg-ng-soft text-sm text-ng">{sp.error}</p>
         )}
 
         <Panel title="事業所情報" flush>

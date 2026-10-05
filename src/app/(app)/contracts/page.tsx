@@ -61,7 +61,7 @@ export default async function ContractsPage({
 
       <Content className="space-y-3">
         {missing.length > 0 && status !== 'all' && (
-          <p className="rounded border border-warn/25 bg-warn-soft px-3 py-2 text-sm text-warn">
+          <p className="notice border-warn/20 bg-warn-soft text-sm text-warn">
             重要事項説明書または個人情報同意の日付が未入力の契約が {missing.length} 件あります。
           </p>
         )}

@@ -84,7 +84,7 @@ export default async function ResultsPage({
         </div>
 
         {total.unrecorded > 0 && (
-          <p className="rounded border border-warn/25 bg-warn-soft px-3 py-2 text-sm text-warn">
+          <p className="notice border-warn/20 bg-warn-soft text-sm text-warn">
             実施済みなのに記録が未入力の訪問が {total.unrecorded} 件あります。請求前に記録を入力してください。
             <Link href="/records?view=unrecorded" className="ml-2 underline">
               未記録一覧を開く

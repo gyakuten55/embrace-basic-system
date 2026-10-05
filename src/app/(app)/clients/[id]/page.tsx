@@ -253,7 +253,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   <tbody>
                     {plans.map((p) => (
                       <tr key={p.id}>
-                        <td className="tnum">
+                        <td className="tnum whitespace-nowrap">
                           <Link href={`/care-plans/${p.id}`} className="link font-medium">
                             第{p.revision}版
                           </Link>
@@ -262,7 +262,9 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                         <td className="tnum text-xs text-ink-sub">
                           {p.period_from ?? '—'} 〜 {p.period_to ?? '—'}
                         </td>
-                        <td className="line-clamp-1 text-xs text-ink-sub">{p.short_goal || '—'}</td>
+                        <td className="text-xs text-ink-sub">
+                          <div className="line-clamp-1">{p.short_goal || '—'}</div>
+                        </td>
                         <td>
                           <StatusBadge value={p.status} />
                         </td>
@@ -358,7 +360,9 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                           </Link>
                         </td>
                         <td className="text-xs">{m.kind}</td>
-                        <td className="line-clamp-2 text-xs text-ink-sub">{m.conclusion || '—'}</td>
+                        <td className="text-xs text-ink-sub">
+                        <div className="line-clamp-2">{m.conclusion || '—'}</div>
+                      </td>
                       </tr>
                     ))}
                   </tbody>
