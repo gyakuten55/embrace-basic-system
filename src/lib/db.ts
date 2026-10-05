@@ -1,12 +1,25 @@
 import Database from 'better-sqlite3'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
+import { applyJapanTime } from './timezone'
 import { seedIfEmpty } from './seed'
+
+applyJapanTime()
 
 let instance: Database.Database | null = null
 
+/**
+ * Vercel などアプリのフォルダに書き込めない環境で、DATABASE_FILE の指定もないとき。
+ * 一時領域にデータベースを置くため、サーバーが入れ替わるとデータは初期状態に戻る（お試し用）。
+ */
+export function isEphemeralDb() {
+  return !process.env.DATABASE_FILE && Boolean(process.env.VERCEL)
+}
+
 function resolveFile() {
-  const configured = process.env.DATABASE_FILE ?? './data/embrace.db'
+  const configured =
+    process.env.DATABASE_FILE ?? (isEphemeralDb() ? path.join(os.tmpdir(), 'embrace.db') : './data/embrace.db')
   const file = path.isAbsolute(configured) ? configured : path.join(process.cwd(), configured)
   fs.mkdirSync(path.dirname(file), { recursive: true })
   return file

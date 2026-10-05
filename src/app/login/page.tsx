@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { currentStaff } from '@/lib/auth'
 import { LogoMark } from '@/components/icons'
+import { isEphemeralDb } from '@/lib/db'
 import { LoginForm } from './login-form'
 
 export const dynamic = 'force-dynamic'
@@ -65,6 +66,12 @@ export default async function LoginPage() {
           <div className="panel mt-6 p-6">
             <LoginForm />
           </div>
+
+          {isEphemeralDb() && (
+            <p className="notice mt-5 border-sun/30 bg-sun-soft text-xs text-warn">
+              お試し環境です。入力したデータは保存されず、しばらくすると初期状態に戻ります。
+            </p>
+          )}
 
           <p className="mt-5 rounded-xl border border-dashed border-line-hard px-4 py-3 text-2xs leading-5 text-ink-sub">
             初期データの職員コード: 1001（管理者・岩井）／ 1002（サ責・中村）／ 2001（ヘルパー・大野）

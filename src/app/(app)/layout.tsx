@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { currentStaff } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { db, isEphemeralDb } from '@/lib/db'
 import { aiEngineLabel } from '@/lib/ai'
 import { logout } from '@/app/actions/session'
 import { AppShell } from '@/components/app-shell'
@@ -27,6 +27,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <AppShell
       counts={{ unrecorded: unrecorded.n, lastMonthClosed: isMonthClosed(addMonths(thisMonth(), -1)) }}
+      demo={isEphemeralDb()}
       officeName={office?.name ?? '事業所'}
       staff={staff}
       aiEngine={aiEngineLabel()}

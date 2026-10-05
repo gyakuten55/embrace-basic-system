@@ -194,6 +194,7 @@ export function AppShell({
   staff,
   aiEngine,
   counts,
+  demo = false,
   logoutAction,
   children,
 }: {
@@ -201,6 +202,8 @@ export function AppShell({
   staff: Staff
   aiEngine: string
   counts: NavCounts
+  /** データが保持されないお試し環境 */
+  demo?: boolean
   logoutAction: () => Promise<void>
   children: React.ReactNode
 }) {
@@ -287,6 +290,7 @@ export function AppShell({
         </header>
 
         <main className="min-w-0 flex-1 overflow-y-auto pb-24 lg:pb-10 print:overflow-visible print:pb-0">
+          {demo && <DemoNotice />}
           {children}
         </main>
 
@@ -341,6 +345,14 @@ export function AppShell({
           </ul>
         </nav>
       </div>
+    </div>
+  )
+}
+
+export function DemoNotice() {
+  return (
+    <div className="border-b border-sun/30 bg-sun-soft px-4 py-2 text-center text-xs font-medium text-warn print:hidden">
+      お試し環境です。入力したデータは保存されず、しばらくすると初期状態に戻ります。
     </div>
   )
 }
